@@ -1,7 +1,18 @@
-import { Router, Request, Response } from "express";
+import { Router } from "express";
+import {
+  createComplaintController,
+  getComplaintByIdController,
+  getAllComplaintsController,
+  updateComplaintController,
+  deleteComplaintController,
+} from "../controllers/complaint.controller";
 
 const router = Router();
 
-router.get("/", (req: Request, res: Response): void => {
-    res.status(200).json({success: true, data: 1})
-})
+router.get("/", getAllComplaintsController);
+router.post("/", createComplaintController);
+router.get("/:id", getComplaintByIdController);
+router.patch("/:id", updateComplaintController);
+router.delete("/:id", deleteComplaintController)
+
+export default router;
