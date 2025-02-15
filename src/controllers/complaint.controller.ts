@@ -33,7 +33,7 @@ export const getAllComplaintsController = async (
   } catch (error: any) {
     res.status(500).json({
       message: "Error occured in getAllComplaintsController.",
-      error: error,
+      error: error.message? error.message : error,
     });
   }
 };
@@ -57,7 +57,7 @@ export const getComplaintByIdController = async (
   } catch (error: any) {
     res.status(500).json({
       message: "Error occured in getComplaintByIdController.",
-      error: error,
+      error: error.message? error.message : error,
     });
   }
 };
@@ -87,7 +87,7 @@ export const createComplaintController = async (
     }
     res.status(500).json({
       message: "Error occured in createComplaintsController.",
-      error: error,
+      error: error.message? error.message : error,
     });
   }
 };
@@ -113,7 +113,7 @@ export const updateComplaintController = async (
     }
     res.status(500).json({
       message: "Error occured in updateComplaintController.",
-      error: error,
+      error: error.message? error.message : error,
     });
   }
 };
@@ -125,20 +125,22 @@ export const deleteComplaintController = async (
 ): Promise<void> => {
   try {
     const { id } = req.params;
-    const existingComplaint = await getComplaintById(id);
+    // const existingComplaint = await getComplaintById(id);
 
-    if (!existingComplaint) {
-      res.status(404).json({ message: "Complaint not found" });
-      return;
-    }
+    // if (!existingComplaint) {
+    //   res.status(404).json({ message: "Complaint not found" });
+    //   return;
+    // }
 
     await deleteComplaintById(id);
 
     res.status(204);
   } catch (error: any) {
-    res.status(500).json({
+    const code = error.statusCode? error.statusCode : 500
+    console.log(error, " is error");
+    res.status(code).json({
       message: "Error occured in deleteComplaintsController.",
-      error: error,
+      error: error.message? error.message : error,
     });
   }
 };

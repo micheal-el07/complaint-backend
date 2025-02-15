@@ -9,7 +9,8 @@ export const sequelize = new Sequelize(
     host: "localhost",
     dialect: "postgres",
     logging: false,
-  }
+  },
+  
 );
 
 export const dbConnection = async () => {

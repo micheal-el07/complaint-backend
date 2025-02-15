@@ -8,6 +8,7 @@ import {
 } from "../repository/complaint.repository";
 import { Complaint, CreateComplaint } from "../validation/complaintValidator";
 import { classifyText } from "../client/textClassification";
+import { CustomError } from "../utils/customError";
 
 // Fetching all of the complaints logic
 export const getAllComplaints = async (): Promise<Complaint[]> => {
@@ -25,7 +26,6 @@ export const getAllComplaints = async (): Promise<Complaint[]> => {
         updatedAt,
       })
     );
-
     return complaints;
   } catch (error: any) {
     console.error("Error fetching all complaints:", error);
@@ -136,14 +136,14 @@ export const deleteComplaintById = async (id: string): Promise<void> => {
     const existingComplaint = await getComplaintByIdFromDB(id);
 
     if (!existingComplaint) {
-      throw new Error(`Complaint with ID ${id} not found`);
+      throw new CustomError(`Complaint with ID ${id} not found`, 404);
     }
 
     return await deleteComplaintFromDB(id);
   } catch (error: any) {
     console.error("Error deleting complaint:", error);
-    throw new Error(
-      error.message || "Error occured in deleteComplaintById service function."
+    throw new CustomError(
+      error.message || "Error occured in deleteComplaintById service function.", error.statusCode
     );
   }
 };
