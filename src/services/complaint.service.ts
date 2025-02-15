@@ -1,9 +1,4 @@
-// import { Complaint } from "../types/complaint"
-import { title } from "process";
-import {
-  ComplaintAttributes,
-  ComplaintCreationAttributes,
-} from "../models/complaint.model";
+import { ComplaintAttributes, ComplaintCreationAttributes } from "../types/db";
 import {
   createComplaintToDB,
   deleteComplaintFromDB,
@@ -12,36 +7,7 @@ import {
   updateComplaintToDB,
 } from "../repository/complaint.repository";
 import { Complaint, CreateComplaint } from "../validation/complaintValidator";
-import axios from "axios";
-import { ClassificationError } from "../utils/customError";
-
-// Interface for classifyText() response object
-interface ClassificationResponse {
-  category: string;
-}
-
-// Send request to another service to get the category of the description
-async function classifyText(text: string) {
-  try {
-    const response = await axios.post<ClassificationResponse>(
-      String(process.env.TEXT_CLASSIFICATION_SERVICE),
-      {
-        text: text,
-        labels: ["billing", "service", "technical"],
-      }
-    );
-    return response.data;
-  } catch (error: unknown) {
-    if (axios.isAxiosError(error)) {
-      throw new ClassificationError(
-        `Classification API Error: ${
-          error.response?.data?.message || "Service unavailable"
-        }`
-      );
-    }
-    throw new ClassificationError("Unexpected error in classifyText function");
-  }
-}
+import { classifyText } from "../client/textClassification";
 
 // Fetching all of the complaints logic
 export const getAllComplaints = async (): Promise<Complaint[]> => {

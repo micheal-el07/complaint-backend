@@ -1,7 +1,5 @@
-import ComplaintModel, {
-  ComplaintAttributes,
-  ComplaintCreationAttributes,
-} from "../models/complaint.model";
+import ComplaintModel from "../models/complaint.model";
+import { ComplaintAttributes, ComplaintCreationAttributes } from "../types/db";
 
 // Fetch all complaints
 export const getAllComplaintsFromDB = async (): Promise<
