@@ -8,7 +8,8 @@ import { dbConnection } from "./config/db";
 import swaggerDoc from "./config/swagger.config";
 import routers from "./routers";
 import errorHandler from "./middlewares/error.middleware";
-const app: Application = express();
+
+export const app: Application = express();
 const PORT: number = Number(process.env.PORT) || 4000;
 
 const startServer = () => {

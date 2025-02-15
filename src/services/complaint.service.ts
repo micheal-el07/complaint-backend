@@ -13,6 +13,7 @@ import {
 } from "../repository/complaint.repository";
 import { Complaint, CreateComplaint } from "../validation/complaintValidator";
 import axios from "axios";
+import { ClassificationError } from "../utils/customError";
 
 // Interface for classifyText() response object
 interface ClassificationResponse {
@@ -30,11 +31,15 @@ async function classifyText(text: string) {
       }
     );
     return response.data;
-  } catch (error: any) {
-    console.error(
-      "Error:",
-      error.response ? error.response.data : error.message
-    );
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      throw new ClassificationError(
+        `Classification API Error: ${
+          error.response?.data?.message || "Service unavailable"
+        }`
+      );
+    }
+    throw new ClassificationError("Unexpected error in classifyText function");
   }
 }
 
@@ -72,7 +77,8 @@ export const getComplaintById = async (
     const complaintFromDb = await getComplaintByIdFromDB(id);
 
     if (!complaintFromDb) {
-      throw new Error("Failed to fetch complaint from database.");
+      // throw new Error("Failed to fetch complaint from database.");
+      return null;
     }
 
     const complaint: Complaint = {

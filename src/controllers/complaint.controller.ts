@@ -27,13 +27,11 @@ export const getAllComplaintsController = async (
       return;
     }
 
-    res
-      .status(200)
-      .json({
-        success: true,
-        message: "Complaints fetched successfully",
-        data: complaints,
-      });
+    res.status(200).json({
+      success: true,
+      message: "Complaints fetched successfully",
+      data: complaints,
+    });
   } catch (error: any) {
     res.status(500).json({
       success: false,
@@ -51,7 +49,7 @@ export const getComplaintByIdController = async (
     const { id } = req.params;
     const complaint = await getComplaintById(id);
 
-    if (!complaint) {
+    if (complaint == null) {
       res
         .status(404)
         .json({ success: false, message: `No complaint with ID ${id} found.` });
