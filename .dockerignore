@@ -1,6 +1,6 @@
 dist
 node_modules
 Dockerfile
-docker-compose.yml
+docker-compose.yaml
 .env
 .git

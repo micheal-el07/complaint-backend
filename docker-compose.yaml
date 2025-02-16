@@ -3,6 +3,7 @@ services:
   db:
     image: postgres:15
     restart: always
+    container_name: db
     environment:
       POSTGRES_DB: complaints
       POSTGRES_USER: postgres
@@ -11,12 +12,25 @@ services:
       - "5432:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
+    networks:
+      - my-network
 
-  api:
+  text-classifier:
+    build:
+      context: ../zsc
+    container_name: text-classifier
+    ports:
+      - "8000:3800"
+    networks:
+      - my-network
+
+  my-app:
     build: .
-    image: complaint-image
     depends_on:
       - db
+      - text-classifier
+    networks:
+      - my-network
     ports:
       - "4000:4000"
     environment:
@@ -26,9 +40,12 @@ services:
       DB_PASSWORD: password
       DB_PORT: 5432
       PORT: 4000
-      # Change the TEXT_CLASSIFICATION_SERVICE to IP address of device running the container as the container bind to the current machine
-      TEXT_CLASSIFICATION_SERVICE: "http://127.0.0.7:8000/classify/"
+      TEXT_CLASSIFICATION_SERVICE: "http://text-classifier:3800/classify"
     command: npm run start
 
 volumes:
   db_data:
+
+networks:
+  my-network:
+    driver: bridge

@@ -57,6 +57,7 @@ export const updateComplaintToDB = async (
 export const deleteComplaintFromDB = async (id: string): Promise<void> => {
   try {
     await ComplaintModel.destroy({ where: { id } });
+    return
   } catch (error) {
     throw error;
   }
