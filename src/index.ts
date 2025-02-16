@@ -49,6 +49,6 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 app.use(errorHandler);
 
 initApp();
-// syncDatabase();
+syncDatabase();
 
 export default app;
