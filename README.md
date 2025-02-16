@@ -1,6 +1,7 @@
  # Complaint Report Management System
 
 This is the backend system for the complaints report management system develop for Leogics technical assessment.
+##### Note: Details regarding the development process for this project is in Documentation folder.
 
 ## Prerequisites
 
