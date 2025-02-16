@@ -2,6 +2,7 @@
 
 #### Project Planning
 
+## Complaint Backend System
 ![alt text](<Screenshot 2025-02-17 002437.png>)
 
 1. Task was started with high level project flow planning, this give rough picture of how the system should flow.
@@ -20,9 +21,11 @@
 ![alt text](<Screenshot 2025-02-17 002020.png>)
 
 7. Tech-stack, Node JS with Typescript is choosen for this project as NodeJS can be considered as unopinionated frameworks.
-8. This framework gave the opportunity for developers to plan and design their system accordingly with being tied to specific architecture.
+8. This framework gave the opportunity for developers to plan and design their system accordingly without being tied to specific architecture or design.
 9. Typescript enforced the used of type in declaring variables to ensure for type safety and it is more readable and easier to be maintain compared to Javascript.
 
+
+## Text Classification System
 ![alt text](<Screenshot 2025-02-17 004407.png>)
 
 10. The stack choosen for the text classification system is FastAPI framework, with python as this framework is the fasted among Python framework.
