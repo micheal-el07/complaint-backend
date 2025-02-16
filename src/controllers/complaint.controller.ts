@@ -89,7 +89,7 @@ export const deleteComplaintController = async (
 
     await deleteComplaintById(id);
 
-    res.status(204);
+    res.status(204).json({});
   } catch (error: any) {
     console.error("Error occured in getAllComplaintsController: ", error);
     next(error);
