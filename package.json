@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc --build",
     "start": "node dist/index.js",
-    "start:dev": "cross-env NODE_ENV=development nodemon --exec ts-node src/server.ts",
+    "start:dev": "cross-env NODE_ENV=development nodemon --exec ts-node src/index.ts",
     "lint": "eslint . --ext .ts",
     "test": "jest --coverage",
     "test:watch": "jest --watch",
@@ -47,7 +47,8 @@
     "supertest": "^7.0.0",
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
-    "typescript": "^5.7.3"
+    "typescript": "^5.7.3",
+    "vitest": "^3.0.5"
   },
   "engines": {
     "node": ">=18.0.0"

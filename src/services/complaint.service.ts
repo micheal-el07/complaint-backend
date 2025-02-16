@@ -1,9 +1,7 @@
-// import { Complaint } from "../types/complaint"
-import { title } from "process";
 import {
   ComplaintAttributes,
   ComplaintCreationAttributes,
-} from "../models/complaint.model";
+} from "../types/complaint.type";
 import {
   createComplaintToDB,
   deleteComplaintFromDB,
@@ -12,42 +10,18 @@ import {
   updateComplaintToDB,
 } from "../repository/complaint.repository";
 import { Complaint, CreateComplaint } from "../validation/complaintValidator";
-import axios from "axios";
 import { ClassificationError } from "../utils/customError";
+import { descriptionClassification } from "../client/decriptionClassification";
 
-// Interface for classifyText() response object
-interface ClassificationResponse {
-  category: string;
-}
 
-// Send request to another service to get the category of the description
-async function classifyText(text: string) {
-  try {
-    const response = await axios.post<ClassificationResponse>(
-      String(process.env.TEXT_CLASSIFICATION_SERVICE),
-      {
-        text: text,
-        labels: ["billing", "service", "technical"],
-      }
-    );
-    return response.data;
-  } catch (error: unknown) {
-    if (axios.isAxiosError(error)) {
-      throw new ClassificationError(
-        `Classification API Error: ${
-          error.response?.data?.message || "Service unavailable"
-        }`
-      );
-    }
-    throw new ClassificationError("Unexpected error in classifyText function");
-  }
-}
+
 
 // Fetching all of the complaints logic
 export const getAllComplaints = async (): Promise<Complaint[]> => {
   try {
     const complaintsFromDb = await getAllComplaintsFromDB();
 
+    
     // Convert raw Sequelize data to Zod-defined `Complaint` type
     const complaints: Complaint[] = complaintsFromDb.map(
       ({ id, title, description, category, createdAt, updatedAt }) => ({
@@ -62,9 +36,10 @@ export const getAllComplaints = async (): Promise<Complaint[]> => {
 
     return complaints;
   } catch (error: any) {
-    console.error("Error fetching all complaints:", error);
+    console.error("Error in getAllComplaints service function:", error);
     throw new Error(
-      error.message || "Error occured in getAllComplaints service function."
+      error.message ||
+        "Error occured in service/complaint.service.ts getAllComplaints function."
     );
   }
 };
@@ -75,7 +50,7 @@ export const getComplaintById = async (
 ): Promise<Complaint | null> => {
   try {
     const complaintFromDb = await getComplaintByIdFromDB(id);
-
+    console.log(complaintFromDb);
     if (!complaintFromDb) {
       // throw new Error("Failed to fetch complaint from database.");
       return null;
@@ -103,7 +78,7 @@ export const createComplaint = async (
   data: CreateComplaint
 ): Promise<Complaint | null> => {
   try {
-    const classification = await classifyText(data.description);
+    const classification = await descriptionClassification(data.description);
 
     if (!classification || !classification.category) {
       throw new Error("Failed to classify complaint description");
@@ -118,7 +93,7 @@ export const createComplaint = async (
   } catch (error: any) {
     console.error("Error creating complaint:", error);
     throw new Error(
-      error.message || "Error occured in createComplaint service function."
+      error.message ?? "Error occured in createComplaint service function."
     );
   }
 };
@@ -126,7 +101,7 @@ export const createComplaint = async (
 // Updating a complaint by ID logic
 export const updateComplaintById = async (
   id: string,
-  data: Partial<Complaint>
+  newComplaintInput: Partial<Complaint>
 ): Promise<Complaint> => {
   try {
     const existingComplaint = await getComplaintByIdFromDB(id);
@@ -135,21 +110,23 @@ export const updateComplaintById = async (
       throw new Error(`Complaint with ID ${id} not found`);
     }
 
-    let updatedData: Partial<Complaint> = { ...data };
+    let newComplaint: Partial<Complaint> = { ...newComplaintInput };
 
-    // If the description is updated, classify the new description
-    if (data.description) {
-      const classification = await classifyText(data.description);
+    // If description is updated, classify the new description
+    if (newComplaint.description) {
+      const classification = await descriptionClassification(
+        newComplaint.description
+      );
 
       if (!classification || !classification.category) {
         throw new Error("Failed to classify complaint description");
       }
 
-      updatedData.category =
+      newComplaint.category =
         classification.category as ComplaintAttributes["category"];
     }
 
-    const updatedComplaint = await updateComplaintToDB(id, updatedData);
+    const updatedComplaint = await updateComplaintToDB(id, newComplaint);
 
     if (!updatedComplaint) {
       throw new Error(`Failed to update complaint with ID ${id}`);

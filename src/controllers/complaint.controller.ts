@@ -1,4 +1,5 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
+import { z } from "zod";
 import {
   createComplaint,
   deleteComplaintById,
@@ -10,40 +11,36 @@ import {
   createComplaintSchema,
   updateComplaintSchema,
 } from "../validation/complaintValidator";
+import { CustomError, NotFoundError } from "../utils/customError";
 
 // Get all complaints
 export const getAllComplaintsController = async (
   req: Request,
-  res: Response
+  res: Response,
+  next: NextFunction
 ) => {
   try {
     const complaints = await getAllComplaints();
 
     if (!complaints) {
       res.status(400).json({
-        success: false,
         message: "Error occured while fetching all complaints.",
       });
       return;
     }
 
     res.status(200).json({
-      success: true,
-      message: "Complaints fetched successfully",
       data: complaints,
     });
   } catch (error: any) {
-    res.status(500).json({
-      success: false,
-      message: "Error occured in getAllComplaintsController.",
-      error: error.message,
-    });
+    next(error)
   }
 };
 
 export const getComplaintByIdController = async (
   req: Request,
-  res: Response
+  res: Response,
+  next: NextFunction
 ): Promise<void> => {
   try {
     const { id } = req.params;
@@ -52,28 +49,23 @@ export const getComplaintByIdController = async (
     if (complaint == null) {
       res
         .status(404)
-        .json({ success: false, message: `No complaint with ID ${id} found.` });
+        .json({ message: `No complaint with ID ${id} found.` });
       return;
     }
 
     res.status(200).json({
-      success: true,
-      message: "Complaint fetched successfully",
       data: complaint,
     });
   } catch (error: any) {
-    res.status(500).json({
-      success: false,
-      message: "Error occured in getComplaintByIdController.",
-      error: error.message,
-    });
+    next(error)
   }
 };
 
 // Create a new complaint
 export const createComplaintController = async (
   req: Request,
-  res: Response
+  res: Response,
+  next: NextFunction
 ) => {
   try {
     const validatedData = createComplaintSchema.parse(req.body);
@@ -81,25 +73,25 @@ export const createComplaintController = async (
 
     if (!newComplaint) {
       res.status(400).json({
-        success: false,
         message: "Error occured while creating complaint.",
       });
       return;
     }
 
-    res.status(201).json(newComplaint);
+    res.status(201).json({newComplaint});
   } catch (error: any) {
-    res.status(500).json({
-      success: false,
-      message: "Error occured in createComplaintsController.",
-      error: error.message,
-    });
+    if (error instanceof z.ZodError) {
+      res.status(400).json({ message: "Validation failed.", errors: error.errors });
+      return;
+    }
+    next(error)
   }
 };
 
 export const updateComplaintController = async (
   req: Request,
-  res: Response
+  res: Response,
+  next: NextFunction
 ) => {
   try {
     const validatedData = updateComplaintSchema.parse(req.body);
@@ -113,18 +105,19 @@ export const updateComplaintController = async (
       data: updatedComplaint,
     });
   } catch (error: any) {
-    res.status(500).json({
-      success: false,
-      message: "Error occured in updateComplaintController.",
-      error: error.message,
-    });
+    if (error instanceof z.ZodError) {
+      res.status(400).json({ message: "Validation failed.", errors: error.errors });
+      return;
+    }
+    next(error)
   }
 };
 
 // Delete a complaint
 export const deleteComplaintController = async (
   req: Request,
-  res: Response
+  res: Response,
+  next: NextFunction
 ) => {
   try {
     const { id } = req.params;
@@ -139,10 +132,6 @@ export const deleteComplaintController = async (
 
     res.status(204).json({ message: "Complaint deleted successfully" });
   } catch (error: any) {
-    res.status(500).json({
-      success: false,
-      message: "Error occured in deleteComplaintsController.",
-      error: error.message,
-    });
+    next(error)
   }
 };
