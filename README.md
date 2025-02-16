@@ -10,7 +10,7 @@ Before getting started, you need to have the following tool/s installed:
 
 If you don't have Node.js installed, you can get it from [here](https://docs.docker.com/get-started/get-docker/).
 
-##### Note: This application is developed on Windows 11, hence these command are run using .
+##### Note: This application is developed on Windows 11.
 
 
 ## Clone the Repository
@@ -18,57 +18,40 @@ If you don't have Node.js installed, you can get it from [here](https://docs.doc
 First, clone the repository to your local machine, you can choose to use windows powershell or git bash (run as admin):
 
 ```bash
-git clone https://github.com/micheal-el07/backend-arkmind.git
-cd your-repository
+git clone https://github.com/micheal-el07/complaint-backend.git
+cd complaint-backend
 ```
 
-## Setup
-1. Navigate to the backend folder
+## Setup ( I'm currently using git bash in Windows 11 )
+1. Make sure you docker engine is installed and running.
 
 ```bash
-cd backend
+docker --version
+docker-compose --version # If using Docker Compose v1
+docker compose version # If using Docker Compose v2 (integrated into Docker) 
 ```
 
-2. Install dependencies:
+2. To initialize the docker container:
    
 ```bash
-npm install
+docker-compose up --build
 ```
 
-3. Environment Variables:
+#### If my-app container in the complaint container shows any error, you can try restart it first by using the bellow command
+```bash
+docker restart <container-id>
+```
+
+3. Accessing the application:
    
-- Copy the .env.example file to .env:
-```bash
-cp .env.example .env
-```
-- Edit the .env file based to your configuration values (database credentials)
-
-4. Database setup:
-- Get into mysql cli
-```bash
-mysql -u root -p
-```
-- Enter your mysql root password
-
-- Create new database (named inventory or anything suitable):
-```bash
-CREATE DATABASE inventory;
-```
-- And switch to the newly created database
-```bash
-use inventory;
-```
-- Copy and paste this sql to create an item table:
-```sql
-```
+- After the installation of the container successful, you can go to your browser and type in http://127.0.0.1:4000/api-docs
+- You can see a Swagger API documentation where you can interact with the system.
+ 
+- Upon successful installation, the complaint container should have three other sub-container which are:
+- 1. The complaint backend system
+  2. The Postgres database for complaint system
+  3. The text classification system 
 
 
-##### Note: Remember to add the database name and table into the .env file according to what you have setup in the database setup.
 
-5. Run the backend:
-```bash
-npm run start
-```
-
-The backend should now be running on http://localhost:4000 by default (or another port based on your configuration).
 
