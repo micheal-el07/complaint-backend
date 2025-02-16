@@ -1,5 +1,3 @@
-// import { Complaint } from "../types/complaint"
-import { title } from "process";
 import {
   ComplaintAttributes,
   ComplaintCreationAttributes,
@@ -12,36 +10,8 @@ import {
   updateComplaintToDB,
 } from "../repository/complaint.repository";
 import { Complaint, CreateComplaint } from "../validation/complaintValidator";
-import axios from "axios";
-import { ClassificationError } from "../utils/customError";
-
-// Interface for classifyText() response object
-interface ClassificationResponse {
-  category: string;
-}
-
-// Send request to another service to get the category of the description
-async function classifyText(text: string) {
-  try {
-    const response = await axios.post<ClassificationResponse>(
-      String(process.env.TEXT_CLASSIFICATION_SERVICE),
-      {
-        text: text,
-        labels: ["billing", "service", "technical"],
-      }
-    );
-    return response.data;
-  } catch (error: unknown) {
-    if (axios.isAxiosError(error)) {
-      throw new ClassificationError(
-        `Classification API Error: ${
-          error.response?.data?.message || "Service unavailable"
-        }`
-      );
-    }
-    throw new ClassificationError("Unexpected error in classifyText function");
-  }
-}
+import descriptionClassification from "../client/descriptionClassification";
+import NotFoundError from "../utils/customError";
 
 // Fetching all of the complaints logic
 export const getAllComplaints = async (): Promise<Complaint[]> => {
@@ -62,10 +32,8 @@ export const getAllComplaints = async (): Promise<Complaint[]> => {
 
     return complaints;
   } catch (error: any) {
-    console.error("Error fetching all complaints:", error);
-    throw new Error(
-      error.message || "Error occured in getAllComplaints service function."
-    );
+    console.error("Error in service/getAllComplaints : ", error);
+    throw error;
   }
 };
 
@@ -77,8 +45,11 @@ export const getComplaintById = async (
     const complaintFromDb = await getComplaintByIdFromDB(id);
 
     if (!complaintFromDb) {
-      // throw new Error("Failed to fetch complaint from database.");
-      return null;
+      throw new NotFoundError({
+        code: 404,
+        message: `Complaint with ID ${id} not found`,
+        logging: true,
+      });
     }
 
     const complaint: Complaint = {
@@ -92,10 +63,8 @@ export const getComplaintById = async (
 
     return complaint;
   } catch (error: any) {
-    console.error("Error creating complaint:", error);
-    throw new Error(
-      error.message || "Error occured in getComplaintById service function."
-    );
+    console.error("Error in service/getComplaintById : ", error);
+    throw error;
   }
 };
 
@@ -103,7 +72,7 @@ export const createComplaint = async (
   data: CreateComplaint
 ): Promise<Complaint | null> => {
   try {
-    const classification = await classifyText(data.description);
+    const classification = await descriptionClassification(data.description);
 
     if (!classification || !classification.category) {
       throw new Error("Failed to classify complaint description");
@@ -116,10 +85,8 @@ export const createComplaint = async (
 
     return await createComplaintToDB(complaintData);
   } catch (error: any) {
-    console.error("Error creating complaint:", error);
-    throw new Error(
-      error.message || "Error occured in createComplaint service function."
-    );
+    console.error("Error in service/createComplaint : ", error);
+    throw error;
   }
 };
 
@@ -139,7 +106,7 @@ export const updateComplaintById = async (
 
     // If the description is updated, classify the new description
     if (data.description) {
-      const classification = await classifyText(data.description);
+      const classification = await descriptionClassification(data.description);
 
       if (!classification || !classification.category) {
         throw new Error("Failed to classify complaint description");
@@ -152,15 +119,17 @@ export const updateComplaintById = async (
     const updatedComplaint = await updateComplaintToDB(id, updatedData);
 
     if (!updatedComplaint) {
-      throw new Error(`Failed to update complaint with ID ${id}`);
+      throw new NotFoundError({
+        code: 404,
+        message: `Complaint with ID ${id} not found`,
+        logging: true,
+      });
     }
 
     return updatedComplaint;
   } catch (error: any) {
-    console.error("Error updating complaint:", error);
-    throw new Error(
-      error.message || "Error occured in updateComplaintById service function."
-    );
+    console.error("Error in service/updateComplaintById : ", error);
+    throw error;
   }
 };
 
@@ -170,14 +139,16 @@ export const deleteComplaintById = async (id: string): Promise<void> => {
     const existingComplaint = await getComplaintByIdFromDB(id);
 
     if (!existingComplaint) {
-      throw new Error(`Complaint with ID ${id} not found`);
+      throw new NotFoundError({
+        code: 404,
+        message: `Second Complaint with ID ${id} not found`,
+        logging: true,
+      });
     }
 
     return await deleteComplaintFromDB(id);
   } catch (error: any) {
-    console.error("Error deleting complaint:", error);
-    throw new Error(
-      error.message || "Error occured in deleteComplaintById service function."
-    );
+    console.error("Error in service/deleteComplaintById : ", error);
+    throw error;
   }
 };

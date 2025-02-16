@@ -7,20 +7,20 @@ interface CustomError extends Error {
 
 // Global error handler middleware
 const errorHandler = (
-  err: CustomError,
+  err: any,
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  console.error("Error caught in error handler middleware:", err.message);
+  console.error("Global error handler: ", err.message);
 
-  const statusCode = err.status || 500;
+  const statusCode = err._code || 500;
   const errorMessage =
     statusCode === 500 ? "Internal Server Error" : err.message;
 
   res.status(statusCode).json({
     status: "error",
-    message: errorMessage,
+    message: err.message ? err.message : errorMessage,
   });
 };
 

@@ -14,7 +14,7 @@ const PORT: number = Number(process.env.PORT) || 4000;
 
 const startServer = () => {
   app.listen(PORT, () => {
-    console.log(`Server is listening on port: ${PORT}`);
+    console.log(`Server is running: http://127.0.0.1:${PORT}`);
   });
 };
 
@@ -46,7 +46,7 @@ app.use("/api", routers);
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 
-app.use(errorHandler)
+app.use(errorHandler);
 
 initApp();
 // syncDatabase();
