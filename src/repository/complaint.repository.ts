@@ -33,8 +33,7 @@ export const createComplaintToDB = async (
   try {
     return await ComplaintModel.create(data);
   } catch (error) {
-    // throw error;
-    throw Error("Database error")
+    throw error;
   }
 };
 

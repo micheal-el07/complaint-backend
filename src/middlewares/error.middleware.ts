@@ -1,9 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-
-// Custom error interface
-interface CustomError extends Error {
-  status?: number;
-}
+import { z } from "zod";
 
 // Global error handler middleware
 const errorHandler = (
@@ -14,13 +10,16 @@ const errorHandler = (
 ) => {
   console.error("Global error handler: ", err.message);
 
-  const statusCode = err._code || 500;
-  const errorMessage =
-    statusCode === 500 ? "Internal Server Error" : err.message;
+  if (err instanceof z.ZodError) {
+    res.status(400).json({ status: false, message: err.errors });
+    return;
+  }
+
+  const statusCode = err._code ? err._code : 500;
 
   res.status(statusCode).json({
     status: "error",
-    message: err.message ? err.message : errorMessage,
+    message: err.message ? err.message : "Internal Server Error",
   });
 };
 

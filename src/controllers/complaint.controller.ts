@@ -20,17 +20,6 @@ export const getAllComplaintsController = async (
   try {
     const complaints = await getAllComplaints();
 
-    if (!complaints) {
-      // res.status(400).json({
-      //   success: false,
-      //   message: "Error occured while fetching all complaints.",
-      // });
-      // return;
-      throw new Error(
-        "Error while fetching all complaints in getAllComplaints."
-      );
-    }
-
     res.status(200).json({ data: complaints });
   } catch (error: any) {
     console.error("Error occured in getAllComplaintsController: ", error);
@@ -46,11 +35,6 @@ export const getComplaintByIdController = async (
   try {
     const { id } = req.params;
     const complaint = await getComplaintById(id);
-
-    if (complaint == null) {
-      res.status(404).json({ message: `No complaint with ID ${id} found.` });
-      return;
-    }
 
     res.status(200).json({ data: complaint });
   } catch (error: any) {
@@ -68,13 +52,6 @@ export const createComplaintController = async (
   try {
     const validatedData = createComplaintSchema.parse(req.body);
     const newComplaint = await createComplaint(validatedData);
-
-    if (!newComplaint) {
-      res.status(400).json({
-        message: "Failed to create new complaint.",
-      });
-      return;
-    }
 
     res.status(201).json({ data: newComplaint });
   } catch (error: any) {
@@ -109,12 +86,6 @@ export const deleteComplaintController = async (
 ) => {
   try {
     const { id } = req.params;
-    // const existingComplaint = await getComplaintById(id);
-
-    // if (!existingComplaint) {
-    //   res.status(404).json({ message: `No complaint with ID ${id} found.` });
-    //   return;
-    // }
 
     await deleteComplaintById(id);
 

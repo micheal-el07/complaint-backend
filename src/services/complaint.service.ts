@@ -44,6 +44,7 @@ export const getComplaintById = async (
   try {
     const complaintFromDb = await getComplaintByIdFromDB(id);
 
+    // Throw not found error if no matching data found
     if (!complaintFromDb) {
       throw new NotFoundError({
         code: 404,
@@ -98,8 +99,13 @@ export const updateComplaintById = async (
   try {
     const existingComplaint = await getComplaintByIdFromDB(id);
 
+    // Throw not found error if no matching data found
     if (!existingComplaint) {
-      throw new Error(`Complaint with ID ${id} not found`);
+      throw new NotFoundError({
+        code: 404,
+        message: `Complaint with ID ${id} not found`,
+        logging: true,
+      });
     }
 
     let updatedData: Partial<Complaint> = { ...data };
@@ -119,11 +125,7 @@ export const updateComplaintById = async (
     const updatedComplaint = await updateComplaintToDB(id, updatedData);
 
     if (!updatedComplaint) {
-      throw new NotFoundError({
-        code: 404,
-        message: `Complaint with ID ${id} not found`,
-        logging: true,
-      });
+      throw new Error("Failed to update complaint.");
     }
 
     return updatedComplaint;
