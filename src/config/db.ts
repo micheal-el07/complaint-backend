@@ -6,7 +6,7 @@ export const sequelize = new Sequelize(
   String(process.env.DB_DATABASE),
   String(process.env.DB_PASSWORD),
   {
-    host: "localhost",
+    host: "db",
     dialect: "postgres",
     logging: false,
   }
