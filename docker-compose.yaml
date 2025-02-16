@@ -17,7 +17,7 @@ services:
 
   text-classifier:
     build:
-      context: ../zsc
+      context: ./classify
     container_name: text-classifier
     ports:
       - "8000:3800"
