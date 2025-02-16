@@ -1,0 +1,35 @@
+version: "3.7"
+services:
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_DB: complaints
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  api:
+    build: .
+    depends_on:
+      - db
+    ports:
+      - "4000:4000"
+    environment:
+      DB_NAME: complaints
+      DB_DATABASE: postgres
+      DB_HOST: db
+      DB_PASSWORD: password
+      DB_PORT: 5432
+      PORT: 4000
+      TEXT_CLASSIFICATION_SERVICE: http://localhost:8000/classify/
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: npm run start
+
+volumes:
+  db_data:
