@@ -25,7 +25,8 @@ services:
       DB_PASSWORD: password
       DB_PORT: 5432
       PORT: 4000
-      TEXT_CLASSIFICATION_SERVICE: http://localhost:8000/classify/
+      # Change the TEXT_CLASSIFICATION_SERVICE to IP address of device running the container as the container bind to the current machine
+      TEXT_CLASSIFICATION_SERVICE: "http://192.168.1.104:8000/classify/"
     volumes:
       - .:/app
       - /app/node_modules
