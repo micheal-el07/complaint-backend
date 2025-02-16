@@ -4,15 +4,13 @@ This is the backend system for the complaints report management system develop f
 
 ## Prerequisites
 
-Before getting started, you need to have the following tools installed:
+Before getting started, you need to have the following tool/s installed:
 
-- **Node.js**: Version 20.16.0 or higher.
-- **npm** (Node Package Manager): Comes with Node.js.
-- **MySQL**
+- **Docker Engine**.
 
-If you don't have Node.js installed, you can get it from [here](https://nodejs.org/).
+If you don't have Node.js installed, you can get it from [here](https://docs.docker.com/get-started/get-docker/).
 
-##### Note: This application is developed on windows 11.
+##### Note: This application is developed on Windows 11, hence these command are run using .
 
 
 ## Clone the Repository
