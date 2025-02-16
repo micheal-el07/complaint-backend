@@ -34,3 +34,10 @@
 10. The stack choosen for the text classification system is FastAPI framework, with python as this framework is the fasted among Python framework.
 11. Python have the most support for machine learning oriented project as it have many libraries that supports for many use case for artificial intelligent with wide community support.
 12. For the technique used to classify the text is zero-shot classification, this technique does not require prior field related data and able to classify text based on semantic relationship or description.
+
+
+#### Challenges:
+1. Minor - Deciding which database to be used, SQL or NoSQL, project with PostgreSQL since its the most fammiliar database with.
+2. Deciding on how the error handling should be implimented, there are several ways of implementing error handling and some might seems simple but maybe lacks in details that can be helpful in debugging.
+3. Working with testing is quite new and unfamiliar, as I don't quite use the automated testing and manually test my developed system.
+4. Configuring the deployment on Docker, for some reason, some time in each build new error comes out, but most of them can be solved an usually due to how the Dockerfile and docker-compose file being structured.
