@@ -9,7 +9,7 @@ Before getting started, you need to have the following tool/s installed:
 
 - **Docker Engine**.
 
-If you don't have Node.js installed, you can get it from [here](https://docs.docker.com/get-started/get-docker/).
+If you don't have Docker installed, you can get it from [here](https://docs.docker.com/get-started/get-docker/).
 
 ##### Note: This application is developed on Windows 11.
 
