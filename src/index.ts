@@ -3,7 +3,6 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import swaggerUi from "swagger-ui-express";
 import ComplaintModel from "./models/complaint.model";
-import complaintRouter from "./routers/complaint.route";
 import { dbConnection } from "./config/db";
 import swaggerDoc from "./config/swagger.config";
 import routers from "./routers";
@@ -43,6 +42,8 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use("/api", routers);
+
+app.use("/*", (req, res) => {res.status(404).json({message: "Invalid endpoint."})}) 
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 
