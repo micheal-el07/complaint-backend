@@ -25,7 +25,9 @@
 8. This framework gave the opportunity for developers to plan and design their system accordingly without being tied to specific architecture or design.
 9. Typescript enforced the used of type in declaring variables to ensure for type safety and it is more readable and easier to be maintain compared to Javascript.
 
-![alt text](image.png) 10. Above are how the system file system are designed.
+![alt text](image.png) 
+
+10. Above are how the system file system are designed.
 
 ## Text Classification System
 
